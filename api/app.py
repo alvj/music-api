@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from marshmallow.exceptions import ValidationError
 from api.models import db, ma
 from api.models.artist import ArtistModel, ArtistSchema
+from api.models.label import LabelModel, LabelSchema
 
 
 app = Flask(__name__)
@@ -48,3 +49,43 @@ def delete_artist(artist_id):
     db.session.delete(artist)
     db.session.commit()
     return ArtistSchema().jsonify(artist), 200
+
+
+@app.route('/labels')
+def get_labels():
+    all_labels = LabelModel.query.all()
+    return jsonify(LabelSchema(many=True).dump(all_labels))
+
+@app.route('/labels', methods=['POST'])
+def create_label():
+    try:
+        label = LabelSchema().load(request.json)
+    except ValidationError as err:
+        return err.messages, 400
+
+    db.session.add(label)
+    db.session.commit()
+    return LabelSchema().jsonify(label), 201
+
+@app.route('/labels/<int:label_id>', methods=['PATCH'])
+def modify_label(label_id):
+    label = LabelSchema().load(
+        request.json,
+        instance=LabelModel.query.get(label_id),
+        partial=True)
+
+    if label.label_id is None:
+        return '', 404
+
+    db.session.commit()
+    return LabelSchema().jsonify(label), 200
+
+@app.route('/labels/<int:label_id>', methods=['DELETE'])
+def delete_label(label_id):
+    label = LabelModel.query.get(label_id)
+    if label is None:
+        return '', 404
+
+    db.session.delete(label)
+    db.session.commit()
+    return LabelSchema().jsonify(label), 200
