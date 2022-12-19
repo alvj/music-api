@@ -18,6 +18,10 @@ app.config.from_pyfile("../config.cfg")
 db.init_app(app)
 ma.init_app(app)
 
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+
 # ARTISTS #
 @app.route('/artists')
 def get_artists():
