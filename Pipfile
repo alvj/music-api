@@ -10,7 +10,6 @@ flask-sqlalchemy = "*"
 marshmallow-sqlalchemy = "*"
 mysql-connector-python = "*"
 gunicorn = "*"
-importlib-metadata = "*"
 
 [dev-packages]
 
