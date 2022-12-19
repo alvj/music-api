@@ -13,7 +13,7 @@ from api.models.role import RoleModel, RoleSchema
 
 app = Flask(__name__)
 # Load db connection string
-app.config.from_pyfile("config.cfg")
+app.config.from_pyfile("../config.cfg")
 
 db.init_app(app)
 ma.init_app(app)
